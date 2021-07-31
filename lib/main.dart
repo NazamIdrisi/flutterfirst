@@ -16,6 +16,7 @@ void main() async{
   await EasyLocalization.ensureInitialized();
   await GetStorage.init();
   runApp(
+
       EasyLocalization(
         path: 'assets/translation',
           supportedLocales: [
