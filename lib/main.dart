@@ -1,7 +1,37 @@
+import 'package:admob_flutter/admob_flutter.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:sncurrencyconverter/Helpers/admob_helper.dart';
+import 'package:sncurrencyconverter/MyTestCalculator/screens/home_screen.dart';
+import 'package:sncurrencyconverter/Views/Pages/SelectCountryOnStartUp.dart';
+import 'package:sncurrencyconverter/Views/Pages/SplashScreen.dart';
+import 'package:sncurrencyconverter/transslation/codegen_loader.g.dart';
+import 'package:sncurrencyconverter/transslation/local_keys.g.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async{
+
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+  await GetStorage.init();
+  runApp(
+      EasyLocalization(
+        path: 'assets/translation',
+          supportedLocales: [
+            Locale('en'),
+            Locale('ar'),
+            Locale('fr'),
+            Locale('th'),
+            Locale('hi'),
+            Locale('ko'),
+            Locale('ja'),
+          ],
+          fallbackLocale: Locale('en'),
+          assetLoader: CodegenLoader(),
+          child: MyApp()
+      )
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -10,25 +40,22 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      supportedLocales: context.supportedLocales,
+      localizationsDelegates: context.localizationDelegates,
+      locale: context.locale,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
+        scaffoldBackgroundColor: Color(0xFF22252D),
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: SplashScreen(),
+      // home: HomeScreen(),
+      // home:HomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -39,7 +66,6 @@ class MyHomePage extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  final String title;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -71,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text("HELLO"),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -94,12 +120,19 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'You have pushed the button this many times:',
+              LocaleKeys.hi_text.tr(),
             ),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
+            SizedBox(height: 30,),
+            ElevatedButton(onPressed: () async{
+              await context.setLocale(Locale('en'));
+            }, child: Text("English")),
+            ElevatedButton(onPressed: () async{
+              await context.setLocale(Locale('ar'));
+            }, child: Text("Arabic")),
           ],
         ),
       ),
